@@ -1,10 +1,9 @@
 const CryptoJS = require('crypto-js');
-import configCred from '../config/config.json';
 export class AesEncryptUtil {
   static privateKey: string; 
   static getAesPrivateKey() {
     if (AesEncryptUtil.privateKey) return AesEncryptUtil.privateKey;
-    AesEncryptUtil.privateKey = configCred.AesPrivateKey;
+    AesEncryptUtil.privateKey = process.env.AesPrivateKey;
     return AesEncryptUtil.privateKey;
   }
 
