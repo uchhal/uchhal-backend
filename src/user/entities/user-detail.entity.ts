@@ -18,7 +18,7 @@ export class UserDetail extends Document {
   email: string;
 
   @Prop({ required: false })
-  address: string;
+  about: string;
 
   @Prop({ required: false })
   facebook: string;
@@ -26,6 +26,12 @@ export class UserDetail extends Document {
   @Prop({ required: false })
   linkedin: string;
 
+  @Prop({ required: false })
+  leetcode: string;
+  
+  @Prop({ required: false })
+  instagram: string;
+  
   @Prop({ required: false, unique: false })
   github: string;
 

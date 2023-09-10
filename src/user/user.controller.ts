@@ -51,7 +51,16 @@ export class UserController {
       return { statusCode: 500, isSuccess: false, error };
     }
   }
-
+  @Get('profile/:id')
+  async findOneProfile(@Param('id') id: string) {
+    try {
+      const data = await this.userService.findOneProfile(id);
+      return { statusCode: 200, isSuccess: true, data };
+    } catch (error) {
+      console.log('[ERROR] [USER CONTROLLER : findOne]', error);
+      return { statusCode: 500, isSuccess: false, error };
+    }
+  }
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     try {

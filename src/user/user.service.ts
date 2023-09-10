@@ -82,15 +82,26 @@ export class UserService {
   async findOne(userkey: string) {
     try {
       const existingUser =
-        (await this.userModel.findOne({ email: userkey })) ||
-        this.userModel.findOne({ username: userkey });
+        (await this.userModel.findOne({ username: userkey })) ||
+        this.userModel.findOne({ email: userkey });
       return existingUser;
     } catch (error) {
       console.log('[ERROR] [USER SERVICE : findOne]', error);
       throw error;
     }
   }
-  
+  async findOneProfile(userkey: string) {
+    try {
+      const existingUser = await this.userDetailModel.findOne({
+        username: userkey,
+      });
+      return existingUser;
+    } catch (error) {
+      console.log('[ERROR] [USER SERVICE : findOne]', error);
+      throw error;
+    }
+  }
+
   async update(username: string, updateUserDto: UpdateUserDto) {
     try {
       const updatedDocument = await this.userDetailModel
