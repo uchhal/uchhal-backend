@@ -1,12 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { CreateJobDto } from './dto/create-job.dto';
 import { UpdateJobDto } from './dto/update-job.dto';
-import { Job,JobDocument } from './entities/job.entity';
+import { Job, JobDocument } from './entities/job.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateInternalJobDto } from './dto/create-internalJob.dto';
-import { InternalJob, InternalJobDocument } from './entities/internalJob.entity';
-import { Company,CompanyDocument } from 'src/companies/entities/company.entity';
+import {
+  InternalJob,
+  InternalJobDocument,
+} from './entities/internalJob.entity';
+import {
+  Company,
+  CompanyDocument,
+} from 'src/companies/entities/company.entity';
 import { CreateCompanyDto } from 'src/companies/dto/create-company.dto';
 import { UpdateCompanyDto } from 'src/companies/dto/update-company.dto';
 
@@ -14,28 +20,56 @@ import { UpdateCompanyDto } from 'src/companies/dto/update-company.dto';
 export class JobsService {
   constructor(
     @InjectModel(Job.name) private jobModel: Model<JobDocument>,
-    @InjectModel(InternalJob.name) private InternaljobModel: Model<InternalJobDocument>,
-    @InjectModel(Company.name) private CompanyModel: Model<CompanyDocument>
+    @InjectModel(InternalJob.name)
+    private InternaljobModel: Model<InternalJobDocument>,
+    @InjectModel(Company.name) private CompanyModel: Model<CompanyDocument>,
   ) {}
 
-
-
   create(createJobDto: CreateJobDto) {
-    const job =  this.jobModel.create(createJobDto)
-    return  job;
+    const job = this.jobModel.create(createJobDto);
+    return job;
   }
 
   async createinternalJob(createinternalJobDto: CreateInternalJobDto) {
-    const {redirectId,companyName,title,location,imageUrl,type,	requiredExperience,salary,skills} = createinternalJobDto;
-    var existingcompany = await this.CompanyModel.findOne({companyName})
-    if (!existingcompany){
-      return {"message":"Company does not exist."};
-    }
-    const job = await new this.InternaljobModel(createinternalJobDto)
-    await job.save()
+    try {
+      const {
+        redirectId,
+        companyName,
+        title,
+        location,
+        imageUrl,
+        type,
+        requiredExperience,
+        salary,
+        skills,
+      } = createinternalJobDto;
+      var existingcompany = await this.CompanyModel.findOne({
+        name: companyName,
+      });
+      if (!existingcompany) {
+        throw new Error('Company does not exist.');
+      }
+      const job = await new this.InternaljobModel(createinternalJobDto);
 
-    // const job =  this.InternaljobModel.create(createinternalJobDto)
-    return  job;
+      const newcreatedjob = {
+        jobid: job._id,
+        title: title,
+        location: location,
+        type: type,
+        experience: requiredExperience,
+      };
+
+      await this.CompanyModel.findOneAndUpdate(
+        { name: companyName },
+        { $push: { postedjobs: newcreatedjob } },
+      );
+      await job.save();
+
+      return job;
+    } catch (error) {
+      console.log('[ERROR] [JOB SERVICE : createUser]', error);
+      throw error;
+    }
   }
 
   findAll() {
@@ -53,6 +87,4 @@ export class JobsService {
   remove(id: number) {
     return `This action removes a #${id} job`;
   }
-
-
 }

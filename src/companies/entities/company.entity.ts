@@ -21,7 +21,7 @@ export class Company extends Document {
     logo:string;
 
 
-
+    @Prop({ required: true })
     postedjobs:Companyjob[];
 
 
