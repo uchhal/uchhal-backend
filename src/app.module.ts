@@ -10,6 +10,7 @@ import { CompilerModule } from './compiler/compiler.module';
 import { McqModule } from './mcq/mcq.module';
 import { TestModule } from './test/test.module';
 import { JobsModule } from './jobs/jobs.module';
+import { CompaniesModule } from './companies/companies.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { JobsModule } from './jobs/jobs.module';
     McqModule,
     TestModule,
     JobsModule,
+    CompaniesModule,
   ],
   controllers: [AppController],
   providers: [

@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { JobsService } from './jobs.service';
 import { CreateJobDto } from './dto/create-job.dto';
 import { UpdateJobDto } from './dto/update-job.dto';
+import { CreateInternalJobDto } from './dto/create-internalJob.dto';
 
 @Controller('jobs')
 export class JobsController {
@@ -11,6 +12,13 @@ export class JobsController {
   create(@Body() createJobDto: CreateJobDto) {
     console.log(createJobDto);
     return this.jobsService.create(createJobDto);
+  }
+
+
+  @Post("/internalJob")
+  createinternalJob(@Body() createinternalJobDto: CreateInternalJobDto) {
+    console.log(createinternalJobDto);
+    return this.jobsService.createinternalJob(createinternalJobDto);
   }
 
   @Get()
@@ -32,4 +40,6 @@ export class JobsController {
   remove(@Param('id') id: string) {
     return this.jobsService.remove(+id);
   }
+
+ 
 }
