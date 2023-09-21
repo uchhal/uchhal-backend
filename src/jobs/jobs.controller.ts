@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { JobsService } from './jobs.service';
 import { CreateJobDto } from './dto/create-job.dto';
 import { UpdateJobDto } from './dto/update-job.dto';
-import { CreateInternalJobDto } from './dto/create-internalJob.dto';
+import { CreateInternalJobDto, CreateJobDescription, UserDataJobApply } from './dto/create-internalJob.dto';
 
 @Controller('jobs')
 export class JobsController {
@@ -16,14 +16,40 @@ export class JobsController {
 
 
   @Post("/internalJob")
-  createinternalJob(@Body() createinternalJobDto: CreateInternalJobDto) {
-    console.log(createinternalJobDto);
-    return this.jobsService.createinternalJob(createinternalJobDto);
+  createinternalJob(@Body() data: {createinternalJobDto: CreateInternalJobDto, jobDescription:CreateJobDescription}) {
+    console.log(data.createinternalJobDto);
+    return this.jobsService.createinternalJob(data.createinternalJobDto, data.jobDescription);
+  }
+
+  @Get("/internalJob/:id")
+  findOneJobDescription(@Param('id') id: string) {
+    return this.jobsService.findOneJobDescription(id);
   }
 
   @Get()
-  findAll() {
+  findAll(){
     return this.jobsService.findAll();
+  }
+
+  @Get('/internalJob')
+  findAllInternalJobs(){
+    return this.jobsService.findAllInternalJobs();
+  }
+
+
+  @Patch('/applyJob')
+  applyJob( @Body() data:UserDataJobApply) {
+    return this.jobsService.applyJob(data);
+  }
+
+  @Get('/appliedbyuser/:id')
+  appliedByUser(@Param('id') id: string){
+    return this.jobsService.appliedByUser(id);
+  }
+
+  @Get('/applieduserinjob/:id')
+  appliedUserInJob(@Param('id') id: string){
+    return this.jobsService.appliedUserInJob(id);
   }
 
   @Get(':id')

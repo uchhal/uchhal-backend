@@ -9,10 +9,9 @@ import {
 
 export class CreateInternalJobDto {
 
-
-    @IsNotEmpty()
-    @IsString()
-      redirectId:string;
+  @IsNotEmpty()
+  @IsString()
+  redirectId:string;
 
   @IsNotEmpty()
   @IsString()
@@ -34,8 +33,6 @@ export class CreateInternalJobDto {
   @IsString()
 	type:string;
 
- 
-
   @IsNotEmpty()
   @IsString()
 	requiredExperience:string;
@@ -52,8 +49,36 @@ export class CreateInternalJobDto {
   @IsString()
 	createdAt:string;
 
+}
 
+export class CreateJobDescription {
 
-    appliedUsers:[];
+  jobId:string;
 
+  description:string;
+
+  required:string[];
+
+  prefered:string[];
+
+  responsibility:string[];
+}
+
+export class Usertype {
+  
+  userId : string;
+
+  userName : string;
+
+  userScore : number;
+}
+
+export class UserDataJobApply {
+  userId : string;
+
+  userName : string;
+
+  userScore : number;
+
+  jobId : string;
 }

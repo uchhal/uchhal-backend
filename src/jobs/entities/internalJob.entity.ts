@@ -34,10 +34,6 @@ export class InternalJob extends Document {
 
   @Prop({ required: true })
 	skills:string;
-  
-  appliedUsers:AppliedUser[];
-
-
 }
 
 export const InternalJobSchema = SchemaFactory.createForClass(InternalJob);
