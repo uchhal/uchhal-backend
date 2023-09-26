@@ -24,7 +24,7 @@ export class CompaniesService {
   }
 
   findAll() {
-    return `This action returns all companies`;
+    return this.CompanyModel.find().exec();
   }
 
   findOne(id: string) {

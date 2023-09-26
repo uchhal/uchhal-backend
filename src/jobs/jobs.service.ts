@@ -18,6 +18,7 @@ import { UpdateCompanyDto } from 'src/companies/dto/update-company.dto';
 import { JobDescription, JobDescriptionDocument } from './entities/jobDescription.entity';
 import { AppliedUser, AppliedUserDocument } from './entities/appliedUsers.entity';
 import { AppliedJobs, AppliedJobsDocument } from 'src/user/entities/appliedJobs.entity';
+import { Companyjob,CompanyjobDocument } from 'src/companies/entities/companyjob.entity';
 
 @Injectable()
 export class JobsService {
@@ -30,6 +31,9 @@ export class JobsService {
 
     @InjectModel(Company.name) 
     private CompanyModel: Model<CompanyDocument>,
+
+    @InjectModel(Company.name) 
+    private CompanyjobModel: Model<CompanyjobDocument>,
 
     @InjectModel(JobDescription.name) 
     private JobDescriptionModel: Model<JobDescriptionDocument>,
@@ -187,7 +191,55 @@ export class JobsService {
   }
 
   remove(id: number) {
+    
     return `This action removes a #${id} job`;
   }
+
+  async deleteinternalJob(id:string,cid:string) : Promise<void>{
+    try{
+      
+      const appliedUsers =  await this.AppliedUserModel.findOne({ jobId: id });
+      if (appliedUsers) {
+        // Access the users array and manipulate its elements
+        appliedUsers.users.forEach(async (user, index) => {
+          await this.AppliedJobsModel.findOneAndUpdate(
+            {userId:user.userId},
+            {$pull:{jobs:id}});
+        }); 
+      } else {
+        console.log(`Job ID ${id} not found in applied users.`);
+      }
+
+      await this.JobDescriptionModel.findOneAndRemove({jobId:id});
+
+      await this.AppliedUserModel.findOneAndRemove({ jobId: id });
+
+      var existingcompany = await this.CompanyModel.findOne({
+        _id: cid,
+      });
+      
+      if (existingcompany) {
+        // console.log('company found');
+        for (let index = 0; index < existingcompany.postedjobs.length; index++) {
+          const job = existingcompany.postedjobs[index];
+          if (job.jobid == id) {
+            // console.log('job found');
+            existingcompany.postedjobs.splice(index, 1);
+            break; 
+          }
+        }
+        await existingcompany.save();
+      }
+      
+
+      await this.InternaljobModel.findOneAndRemove({_id:id});
+
+
+
+    } catch(error){
+      console.log('[ERROR] [JOB SERVICE:delete jobs]',error)
+    }
+  }
+
   
 }

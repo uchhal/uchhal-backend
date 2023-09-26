@@ -62,9 +62,12 @@ export class JobsController {
     return this.jobsService.update(+id, updateJobDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.jobsService.remove(+id);
+  @Delete('/deleteinternalJob/:id/:cid')
+  deleteinternalJob(
+    @Param('id') id: string,
+    @Param('cid') cid: string
+  ) {
+    return this.jobsService.deleteinternalJob(id, cid);
   }
 
  
